@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mbtifrontend/common/constants.dart';
+import 'package:mbtifrontend/screens/history/result_detail_screen.dart';
 import 'package:mbtifrontend/screens/home/home_screen.dart';
 import 'package:mbtifrontend/screens/result/result_screen.dart';
 import 'package:mbtifrontend/screens/test/test_screen.dart';
@@ -31,10 +32,19 @@ final GoRouter _router = GoRouter(
       GoRoute(
           path: '/result',
           builder: (context, state) {
-            final data = state.extra as Map<String, String>;
+            final data = state.extra as Map<String, dynamic>;
             return ResultScreen(
               userName: data['userName']!,
               resultType: data['resultType']!
+            );
+          }
+      ),
+      GoRoute(
+          path: '/history',
+          builder: (context, state) {
+            final data = state.extra as Map<String, dynamic>;
+            return ResultDetailScreen(
+
             );
           }
       )

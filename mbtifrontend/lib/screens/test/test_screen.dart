@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../models/question_model.dart';
 import '../../services/api_service.dart';
 
 class TestScreen extends StatefulWidget {
@@ -31,9 +32,9 @@ class _TestScreenState extends State<TestScreen> {
 
   @override
   void initState() {
+    // 화면이 보이자마자 세팅할 것인데 백엔드 데이터 질문 가져오기
     super.initState();
     loadQuestions();
-    // 화면이 보이자마자 세팅할 것인데 백엔드 데이터 질문 가져오기
   } // 백엔드 데이터를 가지고 올 동안 잠시 대기하는 로딩중
 
   // 백엔드에서 질문 불러오기
@@ -67,29 +68,38 @@ class _TestScreenState extends State<TestScreen> {
         main에서는 builder에 answers 결과까지 함께 전달한다.
          */
         // _showResult();
-        submitText();
+        submitTest();
       }
     });
   }
 
   // 백엔드에 결과 저장하기
-  void submitText() async {
+  void submitTest() async {
     try {
       final result = await ApiService.submitTest(widget.userName, answers);
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(title: Text('검사 완료'),
-        content: Text(
-            '${widget.userName}님은 ${result['resultType']}입니다.'
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => context.go('/'),
-            child: Text("처음으로")
-          )
-        ],
-        )
-      );
+      // showDialog(
+      //   context: context,
+      //   builder: (context) => AlertDialog(title: Text('검사 완료'),
+      //   content: Text(
+      //       '${widget.userName}님은 ${result['resultType']}입니다.'
+      //   ),
+      //   actions: [
+      //     TextButton(
+      //       onPressed: () => context.go('/'),
+      //       child: Text("처음으로")
+      //     )
+      //   ],
+      //   )
+      // );
+      /*
+      mounted : 화면이 존재한다면? 기능
+       */
+      if(mounted) {
+        context.go("/result", extra: {
+          'userName': widget.userName,
+          'resultType': result.resultType
+        });
+      }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("제출 실패했어용!"))
@@ -141,7 +151,7 @@ class _TestScreenState extends State<TestScreen> {
     }
     /*
     임시로 2 문제만 있으므로 인덱스 처리하는 것이며,
-    나중에는 삭제할 코디이다.
+    나중에는 삭제할 코드이다.
      */
     int questionIndex = currentQuestion - 1;
     if(questionIndex >= questions.length) {
@@ -150,7 +160,8 @@ class _TestScreenState extends State<TestScreen> {
     /*
     백엔드에서 가졍온 데이터 중에서 현재 질문에 해당하는 데이터를 변수에 담기
      */
-    var q = questions[currentQuestion];
+    // var q = questions[currentQuestion];
+    Question q = questions[currentQuestion];
 
     return Scaffold(
       appBar: AppBar(
@@ -198,7 +209,7 @@ class _TestScreenState extends State<TestScreen> {
 
                 questions[questionIndex]['text'] as String,
                  */
-                q['questionText'] ?? "질문 없음",
+                q.questionText ?? "질문 없음",
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
@@ -211,7 +222,7 @@ class _TestScreenState extends State<TestScreen> {
                   style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue
                   ),
-                  child: Text(q['optionA']!,
+                  child: Text(q.optionA,
                     style: TextStyle(fontSize: 20, color: Colors.white),
                   )),
               ),
@@ -224,7 +235,7 @@ class _TestScreenState extends State<TestScreen> {
                   style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue
                   ),
-                  child: Text(q['optionB']!,
+                  child: Text(q.optionB,
                     style: TextStyle(fontSize: 20, color: Colors.white),
                   )),
               ),
