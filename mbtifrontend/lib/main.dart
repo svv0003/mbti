@@ -5,6 +5,7 @@ import 'package:mbtifrontend/screens/history/result_detail_screen.dart';
 import 'package:mbtifrontend/screens/home/home_screen.dart';
 import 'package:mbtifrontend/screens/result/result_screen.dart';
 import 'package:mbtifrontend/screens/test/test_screen.dart';
+import 'package:mbtifrontend/screens/types/mbti_types_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -35,18 +36,30 @@ final GoRouter _router = GoRouter(
             final data = state.extra as Map<String, dynamic>;
             return ResultScreen(
               userName: data['userName']!,
-              resultType: data['resultType']!
+              resultType: data['resultType']!,
+              eScore: data['eScore']!,
+              iScore: data['iScore']!,
+              sScore: data['sScore']!,
+              nScore: data['nScore']!,
+              tScore: data['tScore']!,
+              fScore: data['fScore']!,
+              jScore: data['jScore']!,
+              pScore: data['pScore']!,
             );
           }
       ),
       GoRoute(
           path: '/history',
           builder: (context, state) {
-            final data = state.extra as Map<String, dynamic>;
-            return ResultDetailScreen(
-
-            );
+            final userName = state.extra as String;
+            // return ResultDetailScreen(userName: state.extra as String);
+            //                           required        final userName
+            return ResultDetailScreen(userName: userName);
           }
+      ),
+      GoRoute(
+          path: '/types',
+          builder: (context, state) => MbtiTypesScreen()
       )
     ]
 );

@@ -169,7 +169,14 @@ public class MbtiServiceImpl implements MbtiService {
      */
     public List<Result> getResultsByUserName(String userName) {
         log.info("Fetching results for user: {}", userName);
-        return resultMapper.selectByUserName(userName);
+        List<Result> res = resultMapper.selectByUserName(userName);
+//        if (res.isEmpty()) {
+//            log.info("Not found : {}", userName);
+//        } else {
+//            log.info("results");
+//            res.forEach(result -> log.info("Result: {}", result));
+//        }
+        return res;
     }
 
     /**

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mbtifrontend/widgets/error_view.dart';
 
 import '../../models/question_model.dart';
 import '../../services/api_service.dart';
+import '../../widgets/loading_view.dart';
 
 class TestScreen extends StatefulWidget {
   final String userName;
@@ -25,10 +27,11 @@ class _TestScreenState extends State<TestScreen> {
   //     'optionB': '그렇지 않다.',
   //   },
   // ];
-  List<dynamic> questions = [];                 // 백엔드에서 가져온 질문들이 들어갈 배열 목록 세팅한다. dynamic 대신 object 사용 가능!
+  List<Question> questions = [];                 // 백엔드에서 가져온 질문들이 들어갈 배열 목록 세팅한다. dynamic 대신 object 사용 가능!
   int currentQuestion = 0;                      // 현재 질문 번호 (0부터 시작하기 때문에 0으로 설정)
   Map<int, String> answers = {};                // 답변 저장 {질문 번호: 'A', 'B'}
   bool isLoading = true;
+  String? errorMessage;
 
   @override
   void initState() {
@@ -44,18 +47,20 @@ class _TestScreenState extends State<TestScreen> {
       setState(() {
         questions = data;
         isLoading = false;
+        errorMessage = null;
       });
     } catch (e) {
       setState(() {
         isLoading = true;
-      });
+        errorMessage = "질문을 불러오는데 실패했어영!";
+      });;
     }
   }
 
   void selectAnswer(String option) {
     setState((){
       // answers[currentQuestion] = option;
-      answers[questions[currentQuestion]['id']] = option;
+      answers[questions[currentQuestion].id] = option;
 
       // if(currentQuestion < 12) {
       if(currentQuestion < questions.length - 1) {
@@ -97,12 +102,20 @@ class _TestScreenState extends State<TestScreen> {
       if(mounted) {
         context.go("/result", extra: {
           'userName': widget.userName,
-          'resultType': result.resultType
+          'resultType': result.resultType,
+          'eScore' : result.eScore,
+          'iScore' : result.iScore,
+          'sScore' : result.sScore,
+          'nScore' : result.nScore,
+          'tScore' : result.tScore,
+          'fScore' : result.fScore,
+          'jScore' : result.jScore,
+          'pScore' : result.pScore,
         });
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("제출 실패했어용!"))
+        SnackBar(content: Text("제출 실패했어영!"))
       );
     }
   }
@@ -146,7 +159,19 @@ class _TestScreenState extends State<TestScreen> {
     if(isLoading) {
       return Scaffold(
         appBar: AppBar(title: Text('불러오는 중...')),
-        body: Center(child: CircularProgressIndicator()),
+        body: LoadingView(message: '질문을 불러오는 중입니다.') // Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    if(errorMessage != null) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text("오류 발생")
+        ),
+        body: ErrorView(
+          message: errorMessage!,
+          onRetry: loadQuestions
+        )
       );
     }
     /*

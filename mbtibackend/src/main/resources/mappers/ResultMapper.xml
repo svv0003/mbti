@@ -28,7 +28,10 @@
     </select>
 
     <select id="selectByUserName" resultType="Result">
-        SELECT * FROM mbti_results WHERE user_name = #{userName} ORDER BY created_at DESC
+        SELECT *
+        FROM mbti_results
+        WHERE user_name = #{userName}
+        ORDER BY created_at DESC
     </select>
 
     <insert id="insert" parameterType="Result"

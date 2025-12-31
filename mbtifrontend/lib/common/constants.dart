@@ -38,6 +38,7 @@ class ApiConstants {
   -> 상황에 따라 선택하여 사용할 수 있으며 컴파일에서 사용한다는 표현이 더 적합하다.
    */
   static const String baseUrl = 'http://localhost:8080/api/mbti';
+  static const String questions  = '/questions';
   static const String submit  = '/submit';
   static const String result  = '/result';
   static const String results  = '/results';
