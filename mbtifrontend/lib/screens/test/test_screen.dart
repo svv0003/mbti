@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mbtifrontend/models/result_model.dart';
 import 'package:mbtifrontend/widgets/error_view.dart';
 
 import '../../models/question_model.dart';
@@ -81,7 +82,9 @@ class _TestScreenState extends State<TestScreen> {
   // 백엔드에 결과 저장하기
   void submitTest() async {
     try {
+      // final Result result = await ApiService.submitTest(widget.userName, answers);
       final result = await ApiService.submitTest(widget.userName, answers);
+
       // showDialog(
       //   context: context,
       //   builder: (context) => AlertDialog(title: Text('검사 완료'),
@@ -99,19 +102,29 @@ class _TestScreenState extends State<TestScreen> {
       /*
       mounted : 화면이 존재한다면? 기능
        */
+      // if(mounted) {
+      //   context.go("/result", extra: {
+      //     'userName': widget.userName,
+      //     // 'resultType': result.resultType,
+      //     // 'eScore' : result.eScore,
+      //     // 'iScore' : result.iScore,
+      //     // 'sScore' : result.sScore,
+      //     // 'nScore' : result.nScore,
+      //     // 'tScore' : result.tScore,
+      //     // 'fScore' : result.fScore,
+      //     // 'jScore' : result.jScore,
+      //     // 'pScore' : result.pScore,
+      //     'result': result
+      //   });
+      // }
+      // if(mounted) {
+      //   context.go("/result", extra: {
+      //      "userName": widget.userName,
+      //     "result": result
+      //   });
+      // }
       if(mounted) {
-        context.go("/result", extra: {
-          'userName': widget.userName,
-          'resultType': result.resultType,
-          'eScore' : result.eScore,
-          'iScore' : result.iScore,
-          'sScore' : result.sScore,
-          'nScore' : result.nScore,
-          'tScore' : result.tScore,
-          'fScore' : result.fScore,
-          'jScore' : result.jScore,
-          'pScore' : result.pScore,
-        });
+        context.go("/result", extra: result);
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(

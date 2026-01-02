@@ -3,9 +3,13 @@ import 'package:go_router/go_router.dart';
 import 'package:mbtifrontend/common/constants.dart';
 import 'package:mbtifrontend/screens/history/result_detail_screen.dart';
 import 'package:mbtifrontend/screens/home/home_screen.dart';
+import 'package:mbtifrontend/screens/login/login_screen.dart';
 import 'package:mbtifrontend/screens/result/result_screen.dart';
+import 'package:mbtifrontend/screens/signup/signup_screen.dart';
 import 'package:mbtifrontend/screens/test/test_screen.dart';
 import 'package:mbtifrontend/screens/types/mbti_types_screen.dart';
+
+import 'models/result_model.dart';
 
 void main() {
   runApp(const MyApp());
@@ -33,19 +37,24 @@ final GoRouter _router = GoRouter(
       GoRoute(
           path: '/result',
           builder: (context, state) {
-            final data = state.extra as Map<String, dynamic>;
-            return ResultScreen(
-              userName: data['userName']!,
-              resultType: data['resultType']!,
-              eScore: data['eScore']!,
-              iScore: data['iScore']!,
-              sScore: data['sScore']!,
-              nScore: data['nScore']!,
-              tScore: data['tScore']!,
-              fScore: data['fScore']!,
-              jScore: data['jScore']!,
-              pScore: data['pScore']!,
-            );
+            // final data = state.extra as Map<String, dynamic>;
+            // final userName = state.extra as String;
+            final result = state.extra as Result;
+            // return ResultScreen(
+            //   userName: data['userName']!,
+            //   resultType: data['resultType']!,
+            //   eScore: data['eScore']!,
+            //   iScore: data['iScore']!,
+            //   sScore: data['sScore']!,
+            //   nScore: data['nScore']!,
+            //   tScore: data['tScore']!,
+            //   fScore: data['fScore']!,
+            //   jScore: data['jScore']!,
+            //   pScore: data['pScore']!,
+            // );
+
+            // return ResultScreen(userName: userName, result: result);
+            return ResultScreen(result: result);
           }
       ),
       GoRoute(
@@ -60,7 +69,15 @@ final GoRouter _router = GoRouter(
       GoRoute(
           path: '/types',
           builder: (context, state) => MbtiTypesScreen()
-      )
+      ),
+      GoRoute(
+          path: '/login',
+          builder: (context, state) => LoginScreen()
+      ),
+      GoRoute(
+        path: '/signup',
+        builder: (context, state) => SignupScreen(),
+      ),
     ]
 );
 

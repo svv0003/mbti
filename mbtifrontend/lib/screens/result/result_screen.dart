@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../models/result_model.dart';
 import '../../widgets/score_bar.dart';
 
 /*
@@ -13,29 +15,32 @@ SingleChildScrollView는 화면이 움직이기 때문에 less 사용 불가능�
 // 로딩중 화면 메세지 없이 추가하기
 // 개발자가 운하는 본인 방식대로 추가하도록 한다.
 class ResultScreen extends StatefulWidget {
-  final String userName;
-  final String resultType;
-  final int eScore;
-  final int iScore;
-  final int sScore;
-  final int nScore;
-  final int tScore;
-  final int fScore;
-  final int jScore;
-  final int pScore;
+  // final String userName;
+  // final String resultType;
+  // final int eScore;
+  // final int iScore;
+  // final int sScore;
+  // final int nScore;
+  // final int tScore;
+  // final int fScore;
+  // final int jScore;
+  // final int pScore;
+  final Result result;
+
 
   const ResultScreen({
     super.key,
-    required this.userName,
-    required this.resultType,
-    required this.eScore,
-    required this.iScore,
-    required this.sScore,
-    required this.nScore,
-    required this.tScore,
-    required this.fScore,
-    required this.jScore,
-    required this.pScore,
+    // required this.userName,
+    // required this.resultType,
+    // required this.eScore,
+    // required this.iScore,
+    // required this.sScore,
+    // required this.nScore,
+    // required this.tScore,
+    // required this.fScore,
+    // required this.jScore,
+    // required this.pScore,
+    required this.result
   });
 
   @override
@@ -43,6 +48,25 @@ class ResultScreen extends StatefulWidget {
 }
 
 class _ResultScreenState extends State<ResultScreen> {
+  bool isLoading = true;
+
+  // 링크 복사 함수
+  void _copyResultLink() {
+    String shareUrl = 'https://나의도메인주소.com/result/${widget.result.id}';
+    Clipboard.setData(ClipboardData(text: shareUrl));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          "링크 복사되었습니다.",
+          style: TextStyle(color: Colors.white),
+        ),
+        duration: Duration(seconds: 2),
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: Colors.lightBlue,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -89,12 +113,12 @@ class _ResultScreenState extends State<ResultScreen> {
                 child: Column(
                   children: [
                     Text(
-                        "${widget.userName}님의 MBTI는",
+                        "${widget.result.userName}님의 MBTI는",
                         style: TextStyle(fontSize: 20)
                     ),
                     SizedBox(height: 10),
                     Text(
-                        "${widget.resultType}",
+                        widget.result.resultType,
                         style: TextStyle(
                           fontSize: 30,
                           fontWeight: FontWeight.bold,
@@ -125,29 +149,64 @@ class _ResultScreenState extends State<ResultScreen> {
                     ScoreBar(
                       label1: 'E (외향)',
                       label2: 'I (내향)',
-                      score1: widget.eScore,
-                      score2: widget.iScore,
+                      score1: widget.result.eScore,
+                      score2: widget.result.iScore,
                     ),
                     ScoreBar(
                       label1: 'S (감각)',
                       label2: 'N (직관)',
-                      score1: widget.sScore,
-                      score2: widget.nScore,
+                      score1: widget.result.sScore,
+                      score2: widget.result.nScore,
                     ),
                     ScoreBar(
                       label1: 'T (사고)',
                       label2: 'F (감정)',
-                      score1: widget.tScore,
-                      score2: widget.fScore,
+                      score1: widget.result.tScore,
+                      score2: widget.result.fScore,
                     ),
                     ScoreBar(
                       label1: 'J (판단)',
                       label2: 'P (인식)',
-                      score1: widget.jScore,
-                      score2: widget.pScore,
+                      score1: widget.result.jScore,
+                      score2: widget.result.pScore,
                     ),
                   ],
                 ),
+              ),
+              SizedBox(height: 30),
+              SizedBox(
+                  width: 300,
+                  height: 50,
+                  /*
+                  아이콘이나 글자가 child에 위치
+                  child: ElevatedButton(
+                    onPressed: () => context.go('/'),
+                    child: Text("결과 링크 복사하기",),
+                    icon: Icon(Icons.share),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.amber,
+                      foregroundColor: Colors.black87
+                    )
+
+                    글자와 아이콘을 사용하는 버튼 형식
+                    ElevatedButton.icon(
+                      onPressed: () => context.go('/'),
+                      icon: Icon(Icons.share),
+                      label: Text('결과 링크 복사하기')
+                   */
+                  /*
+                  생성자가 onPressed icon label required,
+                  나머지는 this 필수로 작성하지 않아도 되는 생성자
+                   */
+                  child: ElevatedButton.icon(
+                    onPressed: () => _copyResultLink(),
+                    label: Text("결과 링크 복사하기"),
+                    icon: Icon(Icons.share),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.amber,
+                      foregroundColor: Colors.black87
+                    )
+                  )
               ),
               SizedBox(height: 30),
               SizedBox(

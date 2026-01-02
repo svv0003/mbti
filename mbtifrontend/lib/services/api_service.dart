@@ -8,6 +8,7 @@ import 'package:mbtifrontend/models/result_model.dart';
 import 'package:mbtifrontend/models/test_request_model.dart';
 
 import '../models/mbti_type_model.dart';
+import '../models/user_model.dart';
 
 
 /*
@@ -23,6 +24,54 @@ class ApiService {
    */
   // constants.dart 파일에서 상태관리하는 url 주소 호출하여 사용한다.
   static const String url = ApiConstants.baseUrl;
+
+  /*=============================================================================================================================================
+  =============================================================================================================================================== 사용자 관련
+  =============================================================================================================================================*/
+  static Future<User> login(String userName) async {
+    final res = await http.post(
+        Uri.parse('$url${ApiConstants.userUrl}/login'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({'userName': userName})
+    );
+    if(res.statusCode == 200){
+      Map<String, dynamic> jsonData = json.decode(res.body);
+      return User.fromJson(jsonData);
+    } else {
+      throw Exception(ErrorMessages.submitFailed);
+    }
+  }
+
+  // 사용자명으로 사용자 조회하기
+  static Future<User?> getUserByUserName(String userName) async {
+    final res = await http.get(
+        Uri.parse('$url${ApiConstants.userUrl}/name/${userName}'));
+    if(res.statusCode == 200){
+      final jsonData = json.decode(res.body);
+      return User.fromJson(jsonData);
+    } else if (res.statusCode == 404) {
+      return null;
+    } else {
+      throw Exception(ErrorMessages.submitFailed);
+    }
+  }
+
+  // 모든 사용자 조회하기
+  static Future<List<User>> getAllUsers() async {
+    final res = await http.get(
+        Uri.parse('$url${ApiConstants.userUrl}'));
+    if (res.statusCode == 200) {
+      final List jsonResponse = json.decode(res.body);
+      return jsonResponse.map((data) => User.fromJson(data)).toList();
+    } else {
+      throw Exception(ErrorMessages.submitFailed);
+    }
+  }
+
+
+  /*=============================================================================================================================================
+  =============================================================================================================================================== 질문 관련
+  =============================================================================================================================================*/
   /*
   TODO 백엔드 컨트롤러에서 질문 가져오기
   보통 백엔드나 외부 api 데이터를 가져올 때
@@ -55,6 +104,9 @@ class ApiService {
     }
   }
 
+  /*=============================================================================================================================================
+  =============================================================================================================================================== 검사 관련
+  =============================================================================================================================================*/
   // 결과 제출하기
   // javaScript + java + c++ + sql
   //

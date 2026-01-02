@@ -37,13 +37,15 @@ class ApiConstants {
   Flutter 앱에서는 주로 컴파일 실행하며, 이유는 인터프리터보다 빠르기 때문이다.
   -> 상황에 따라 선택하여 사용할 수 있으며 컴파일에서 사용한다는 표현이 더 적합하다.
    */
-  static const String baseUrl = 'http://localhost:8080/api/mbti';
-  static const String questions  = '/questions';
-  static const String submit  = '/submit';
-  static const String result  = '/result';
-  static const String results  = '/results';
-  static const String types  = '/types';
-  static const String health  = '/health';
+  static const String baseUrl = 'http://localhost:8080/api';
+  static const String mbtiUrl = '/mbti';
+  static const String userUrl = '/users';
+  static const String questions  = '$mbtiUrl/questions';
+  static const String submit  = '$mbtiUrl/submit';
+  static const String result  = '$mbtiUrl/result';
+  static const String results  = '$mbtiUrl/results';
+  static const String types  = '$mbtiUrl/types';
+  static const String health  = '$mbtiUrl/health';
 }
 
 class AppConstants {

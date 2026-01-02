@@ -122,6 +122,7 @@ class _ResultDetailScreenState extends State<ResultDetailScreen> {
                 // 클릭 시 보이는 아이콘
                 trailing: Icon(Icons.arrow_forward_ios),
                 // 한 줄의 어떤 곳을 클릭하더라도 세부 정보 확인할 수 있는 모달 띄이기
+                // 공유하기와 같은 세부 기능을 넣을 수도 있지만 되도록이면 위젯으로 따로 생성 후 기능 설정하는 것이 깔끔하다.
                 onTap: () {
                   showDialog(
                     context: context,
