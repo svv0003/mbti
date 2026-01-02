@@ -106,7 +106,22 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: ElevatedButton(
                     onPressed: () => context.go("/login"),
                     child: Text(
-                      "로그인하기",
+                      "로그인",
+                      style: TextStyle(fontSize: 20)),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      foregroundColor: Colors.white
+                    ),
+                  ),
+                ),
+                SizedBox(height: 40),
+                SizedBox(
+                  width: 300,
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: () => context.go("/signup"),
+                    child: Text(
+                      "회원가입",
                       style: TextStyle(fontSize: 20)),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,

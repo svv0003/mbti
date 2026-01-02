@@ -61,11 +61,12 @@ class _ResultDetailScreenState extends State<ResultDetailScreen> {
     results = await DynamicApiService.getResultsByUserName(widget.userName);
     처럼 작성하면 둘 다 ing 진행중인 상태라 꼬일 수 있는 문제 발생 가능성이 있다.
      */
+    isLoading = true;
     try{
       final data = await ApiService.getResultsByUserName(widget.userName);
       setState(() {
-        results = data;
         isLoading = false;
+        results = data;
       });
     } catch(e) {
       setState(() {
@@ -123,21 +124,75 @@ class _ResultDetailScreenState extends State<ResultDetailScreen> {
                 trailing: Icon(Icons.arrow_forward_ios),
                 // 한 줄의 어떤 곳을 클릭하더라도 세부 정보 확인할 수 있는 모달 띄이기
                 // 공유하기와 같은 세부 기능을 넣을 수도 있지만 되도록이면 위젯으로 따로 생성 후 기능 설정하는 것이 깔끔하다.
+                // onTap: () {
+                //   showDialog(
+                //     context: context,
+                //     builder: (context) => AlertDialog(
+                //       title: Text(res.resultType),
+                //       content: Text(
+                //           '${res.typeName ?? res.resultType} \n\n'
+                //               ' ${res.description ?? "정보없음"}'),
+                //       actions: [
+                //         TextButton(
+                //             onPressed: () => Navigator.pop(context),
+                //             child: Text("닫기")
+                //         )
+                //       ],
+                //     )
+                //   );
+                // },
                 onTap: () {
                   showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
-                      title: Text(res.resultType),
-                      content: Text(
-                          '${res.typeName ?? res.resultType} \n\n'
-                              ' ${res.description ?? "정보없음"}'),
+                      title: Text(
+                        res.resultType,
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.pink,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      content: SingleChildScrollView(  // 설명이 길면 스크롤 가능하게!
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              res.typeName ?? res.resultType,
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              res.description ?? "해당 유형에 대한 설명이 없습니다.",
+                              style: const TextStyle(fontSize: 16, height: 1.5),
+                            ),
+                          ],
+                        ),
+                      ),
+                      actionsAlignment: MainAxisAlignment.center,
                       actions: [
                         TextButton(
-                            onPressed: () => Navigator.pop(context),
-                            child: Text("닫기")
-                        )
+                          onPressed: () => Navigator.pop(context),
+                          style: TextButton.styleFrom(
+                            foregroundColor: Colors.blue,
+                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          ),
+                          child: const Text(
+                            "닫기",
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ),
                       ],
-                    )
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      backgroundColor: Colors.white,
+                    ),
                   );
                 },
               ),

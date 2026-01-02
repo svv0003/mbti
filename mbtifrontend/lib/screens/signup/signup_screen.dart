@@ -53,13 +53,30 @@ class _SignupScreen extends State<SignupScreen> {
     _isLoading = true;
     _validateName();
     try {
-      final data = await ApiService.signup(name);
+      final user = await ApiService.login(name);
       setState(() {
-        if(data != null){
+        if(user != null){
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('${user.userName}님, 회원가입이 완료되었습니다!'),
+              backgroundColor: Colors.green,
+              duration: Duration(seconds: 2),
+            ),
+          );
+          context.go('/test', extra: user.userName);
         }
       });
     } catch (e) {
-
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('회원가입에 실패했습니다. 다시 시도해주세요.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } if (mounted) {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -141,8 +158,10 @@ class _SignupScreen extends State<SignupScreen> {
                   height: 50,
                   child: ElevatedButton(
                     onPressed: _isLoading
-                        ? null
-                        : _handleSignup(input),
+                    ? null
+                    : () async {
+                      _handleSignup(_nameController.text.trim());
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green,
                       foregroundColor: Colors.white,
