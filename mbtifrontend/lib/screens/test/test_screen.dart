@@ -36,8 +36,13 @@ class _TestScreenState extends State<TestScreen> {
 
   @override
   void initState() {
-    // 화면이 보이자마자 세팅할 것인데 백엔드 데이터 질문 가져오기
+    /*
+    부모 클래스(StatefulWidget의 State)의 initState()를 먼저 실행한다.
+    */
     super.initState();
+    /*
+    화면이 보이자마자 세팅할 것인데 백엔드 데이터 질문 가져온다.
+    */
     loadQuestions();
   } // 백엔드 데이터를 가지고 올 동안 잠시 대기하는 로딩중
 
