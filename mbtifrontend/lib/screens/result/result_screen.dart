@@ -25,8 +25,11 @@ class ResultScreen extends StatefulWidget {
   // final int fScore;
   // final int jScore;
   // final int pScore;
-  final Result result;
 
+  /*
+  DTO(Model) 객체 전체를 받는다.
+  */
+  final Result result;
 
   const ResultScreen({
     super.key,
