@@ -16,16 +16,16 @@ void main() {
 }
 
 final GoRouter _router = GoRouter(
-    initialLocation: '/',
-    routes: [
+    initialLocation: '/',        // 앱 처음 켜면 어디로 갈까? → 홈 화면
+    routes: [                    // 각 경로별로 어떤 화면 띄울지 정의한다.
       GoRoute(
           path: '/',
           builder: (context, state) => const HomeScreen()
       ),
       GoRoute(
           path: '/test',
-          builder: (context, state) {
-            final userName = state.extra as String;     // 잠시 사용할 이름인데 문자열이에영~
+          builder: (context, state) {                   // /test로 이동할 때 반드시 userName(String)을 extra로 전달해야 한다. -> context.go('/test', extra: '홍길동');
+            final userName = state.extra as String;     // 잠시 사용할 이름인데 문자열이에요~ 
             /*
             생성된 객체를 사용할 수 있으나 매개변수는 존재하지 않는 상태이다.
             단순히 화면만 보여주는 형태이다.
@@ -36,7 +36,7 @@ final GoRouter _router = GoRouter(
       ),
       GoRoute(
           path: '/result',
-          builder: (context, state) {
+          builder: (context, state) {          // /result로 갈 때 반드시 Result DTO 객체를 extra로 전달해야 한다. -> context.go('/result', extra: myResultObject);
             // final data = state.extra as Map<String, dynamic>;
             // final userName = state.extra as String;
             final result = state.extra as Result;
@@ -81,7 +81,15 @@ final GoRouter _router = GoRouter(
     ]
 );
 
+/*
+Flutter 앱의 가장 최상위(root) 위젯이다.
+*/
 class MyApp extends StatelessWidget {
+
+  /*
+  앱의 최상위 위젯 이름은 보통 MyApp이라고 짓는다.
+  StatelessWidget을 상속 → 이 위젯 자체는 상태(데이터 변화)가 없다. (앱 전체 설정만 할 뿐)
+  */
   const MyApp({super.key});
 
   @override
