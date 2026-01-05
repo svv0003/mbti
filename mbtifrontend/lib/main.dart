@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mbtifrontend/common/constants.dart';
+import 'package:mbtifrontend/providers/auth_provider.dart';
 import 'package:mbtifrontend/screens/history/result_detail_screen.dart';
 import 'package:mbtifrontend/screens/home/home_screen.dart';
 import 'package:mbtifrontend/screens/login/login_screen.dart';
@@ -8,10 +9,12 @@ import 'package:mbtifrontend/screens/result/result_screen.dart';
 import 'package:mbtifrontend/screens/signup/signup_screen.dart';
 import 'package:mbtifrontend/screens/test/test_screen.dart';
 import 'package:mbtifrontend/screens/types/mbti_types_screen.dart';
+import 'package:provider/provider.dart';
 
 import 'models/result_model.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
@@ -97,22 +100,27 @@ class MyApp extends StatelessWidget {
     /*
     google에서 제공하는 기본 커스텀 css를 사용하며 특정 경로를 개발자가 직접 설정하겠다.
      */
-    return MaterialApp.router(
-      title: AppConstants.appName,
-      debugShowCheckedModeBanner: false,
-      /*
-      경로 설정에 관한 것은 _router 변수명을 참조해라.
-       */
-      routerConfig: _router,
-      /*
-      추후 라이트테마, 다크테마 설정할 것이다.
-      theme
-      darkTheme
-      themeMode
-      home을 사용할 때는 go_router와 같이 기본 메인 위치를 지정하지 않고,
-      home을 기준으로 경로 이동 없이 작성할 때 사용한다.
-      home: const HomeScreen();
-       */
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthProvider())
+      ],
+      child: MaterialApp.router(
+        title: AppConstants.appName,
+        debugShowCheckedModeBanner: false,
+        /*
+        경로 설정에 관한 것은 _router 변수명을 참조해라.
+         */
+        routerConfig: _router,
+        /*
+        추후 라이트테마, 다크테마 설정할 것이다.
+        theme
+        darkTheme
+        themeMode
+        home을 사용할 때는 go_router와 같이 기본 메인 위치를 지정하지 않고,
+        home을 기준으로 경로 이동 없이 작성할 때 사용한다.
+        home: const HomeScreen();
+         */
+      )
     );
   }
 }

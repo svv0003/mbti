@@ -9,9 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class UserServiceImpl implements UserService {
 
     private final UserMapper userMapper;
@@ -32,14 +32,16 @@ public class UserServiceImpl implements UserService {
             userMapper.updateLastLogin(existingUser.getId());
             log.info("Existing user logged in: {}", userName);
             return userMapper.selectById(existingUser.getId());
-        } else {
-            // 신규 사용자 - 등록
-            User newUser = new User();
-            newUser.setUserName(userName);
-            userMapper.insert(newUser);
-            log.info("New user registered: {}", userName);
-            return userMapper.selectById(newUser.getId());
         }
+//        else {
+//            // 신규 사용자 - 등록
+//            User newUser = new User();
+//            newUser.setUserName(userName);
+//            userMapper.insert(newUser);
+//            log.info("New user registered: {}", userName);
+//            return userMapper.selectById(newUser.getId());
+//        }
+        return null;
     }
 
     /**
@@ -77,5 +79,27 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(int id) {
         log.info("Deleting user with id: {}", id);
         userMapper.delete(id);
+    }
+
+    /*
+    사용자
+     */
+    @Override
+    public User signup(String userName) {
+        log.info("Signup attempt for user: {}", userName);
+         if (userName == null || userName.trim().isEmpty()) {
+             log.warn("Empty username provided for signup");
+             throw new IllegalArgumentException("사용자 이름은 필수입니다.");
+         }
+        User existingUser = userMapper.selectByUserName(userName);
+        if (existingUser != null) {
+            log.warn("Username already exists: {}", userName);
+            throw new IllegalArgumentException("이미 존재하는 사용자입니다.");
+        }
+        User user = new User();
+        user.setUserName(userName);
+        userMapper.insertUser(user);
+        log.info("New user signed up: {} with id: {}", userName, user.getId());
+        return userMapper.selectById(user.getId());
     }
 }

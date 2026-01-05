@@ -25,10 +25,10 @@
     </select>
 
     <!-- 사용자 등록 -->
-    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO users (user_name, created_at)
-        VALUES (#{userName}, CURRENT_TIMESTAMP)
-    </insert>
+<!--    <insert id="insert" useGeneratedKeys="true" keyProperty="id">-->
+<!--        INSERT INTO users (user_name, created_at)-->
+<!--        VALUES (#{userName}, CURRENT_TIMESTAMP)-->
+<!--    </insert>-->
 
     <!-- 마지막 로그인 시간 업데이트 -->
     <update id="updateLastLogin">
@@ -42,4 +42,9 @@
         DELETE FROM users WHERE id = #{id}
     </delete>
 
+    <!-- 사용자 등록 -->
+    <insert id="insertUser" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO users (user_name, created_at)
+        VALUES (#{userName}, CURRENT_TIMESTAMP)
+    </insert>
 </mapper>

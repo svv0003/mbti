@@ -53,7 +53,7 @@ class _SignupScreen extends State<SignupScreen> {
     _isLoading = true;
     _validateName();
     try {
-      final user = await ApiService.login(name);
+      final user = await ApiService.signup(name);
       setState(() {
         if(user != null){
           ScaffoldMessenger.of(context).showSnackBar(
@@ -102,11 +102,8 @@ class _SignupScreen extends State<SignupScreen> {
               // Column 설정 시 반드시 사용한다.
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // TODO: 회원가입 아이콘 추가
-                // 힌트: Icon(Icons.person_add, size: 100, color: Colors.green)
+                Icon(Icons.person_add, size: 70, color: Colors.green),
                 SizedBox(height: 30),
-
-                // TODO: 타이틀 텍스트 추가
                 Text(
                   "MBTI 검사를 위해\n회원가입해주세요.",
                   style: TextStyle(
@@ -115,13 +112,23 @@ class _SignupScreen extends State<SignupScreen> {
                   textAlign: TextAlign.center
                 ),
                 SizedBox(height: 40),
+                /*
+                테두리를 만드는 방법은 Container, SizedBox 두 가지가 있다.
 
-                // TODO: 이름 입력 TextField 구현
+                SizedBox
+                간격 만들거나 레이아웃 제약만 담당하며, 가볍고 성능 좋다.
+                색, 테두리, radius, 그림자 꾸밈(Decoration) 불가능하다.
+
+                Container
+                크기 지정, 패딩 / 마진, 색상, 테두리, radius, 그림자, 정렬(alignment) 등
+                디자인 목적에 최적화된 위젯으로, 내부적으로 여러 위젯의 조합을 위해 쓰이지만
+                무겁기 때문에 필요한 경우에만 사용한다.
+                 */
                 SizedBox(
                   width: 300,
                   child: TextField(
                     controller: _nameController,
-                    enabled: !_isLoading, // 로딩 중에는 입력 불가
+                    enabled: !_isLoading,              // 로딩 중에는 입력 불가 -> T/F에 따른 disabled 효과 적용한다.
                     decoration: InputDecoration(
                       labelText: '이름',
                       hintText: '이름을 입력해주세요.',
@@ -129,7 +136,6 @@ class _SignupScreen extends State<SignupScreen> {
                       errorText: _errorText,
                       prefixIcon: Icon(Icons.person_outline),
                     ),
-                    // TODO: 실시간 입력 검증 (onChanged)
                     onChanged: (value) {
                       final input = value.trim();
                       setState(() {
@@ -150,9 +156,54 @@ class _SignupScreen extends State<SignupScreen> {
                     },
                   ),
                 ),
-                SizedBox(height: 30),
+                /*
+                SizedBox(height: 10),
+                Container(
+                  width: 300,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: _errorText == null ? Colors.blue : Colors.pink,
+                      width: 1.0,
+                    ),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: TextField(
+                    controller: _nameController,
+                    enabled: !_isLoading,              // 로딩 중에는 입력 불가 -> T/F에 따른 disabled 효과 적용한다.
+                    decoration: InputDecoration(
+                      labelText: '이름',
+                      hintText: '이름을 입력해주세요.',
+                      floatingLabelBehavior: FloatingLabelBehavior.never,
+                      errorText: _errorText,
+                      prefixIcon: Icon(Icons.person_outline),
+                      border: InputBorder.none, // ⭐ 기본 테두리 제거
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 14,
+                      ),
+                    ),
+                    onChanged: (value) {
+                      final input = value.trim();
+                      setState(() {
+                        if (input.isEmpty) {
+                          _errorText = null;
+                          return;
+                        }
+                        if (RegExp(r'^[가-힣a-zA-Z]+$').hasMatch(input)) {
+                          _errorText = null;
+                        } else if (RegExp(r'[0-9]').hasMatch(input)) {
+                          _errorText = '숫자는 입력할 수 없습니다.';
+                        } else {
+                          _errorText = '한글과 영문만 입력 가능합니다.';
+                        }
+                      });
+                    },
+                  ),
+                ),
 
-                // TODO: 회원가입 버튼 구현
+                 */
+                SizedBox(height: 30),
                 SizedBox(
                   width: 300,
                   height: 50,
@@ -167,7 +218,6 @@ class _SignupScreen extends State<SignupScreen> {
                       foregroundColor: Colors.white,
                       disabledBackgroundColor: Colors.grey[400],
                     ),
-                    // TODO 21: 로딩 중일 때 CircularProgressIndicator 표시
                     child: _isLoading
                       ? CircularProgressIndicator(color: Colors.white)
                       : Text(
@@ -177,7 +227,6 @@ class _SignupScreen extends State<SignupScreen> {
                 ),
                 SizedBox(height: 20),
 
-                // TODO 22: 로그인 링크 구현
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -202,7 +251,6 @@ class _SignupScreen extends State<SignupScreen> {
   /// TextEditingController 메모리 누수 방지
   @override
   void dispose() {
-    // TODO 23: TextEditingController 해제
     _nameController.dispose();
     super.dispose();
   }

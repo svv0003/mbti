@@ -12,7 +12,8 @@ dependencies:
     sdk: flutter
   # 백엔드로 DB 요청 보내기 위한 패키지 GET POST PUT DELETE
   # dio 사용할 것
-  http: ^1.1.0
+#  http: ^1.1.0
+  dio: ^5.4.0
   # 상태 관리 패키지 데이터를 공유하고 관리할 수 있다.
   # 추후 riverpod 사용할 것이다.
   provider: ^6.1.1
@@ -23,6 +24,8 @@ dependencies:
   # 경로 이동에 사용된다.
   cupertino_icons: ^1.0.8
   go_router: ^14.0.0
+  # 로그인 상태 저장 모듈
+  shared_preferences: ^2.2.2
 
 dev_dependencies:
   flutter_test:
@@ -31,5 +34,5 @@ dev_dependencies:
   flutter_lints: ^6.0.0
 
 flutter:
-
   uses-material-design: true
+

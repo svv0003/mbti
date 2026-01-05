@@ -1,6 +1,7 @@
 import 'dart:convert';
 
-import 'package:http/http.dart' as http;
+// import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 import 'package:mbtifrontend/common/constants.dart';
 import 'package:mbtifrontend/models/answer_model.dart';
 import 'package:mbtifrontend/models/question_model.dart';
@@ -12,8 +13,190 @@ import '../models/user_model.dart';
 
 
 /*
+DIO 장점
+- 자동으로 JSON 인코딩/디코딩 처리한다.
+- Interceptor를 통한 로깅, 인증 토큰 추가 가능하다.
+- 백엔드 통신 타임아웃 설정이 더 간편하다.
+- FormData, 파일 업로드 지원이 편리하다.
+- 에러 처리가 더 구조화 되어있다.
+- queryParameters 쉽게 추가 가능하다.
+
+http와의 차이점
+- http : json.encode() / json.decode() 필요하다.
+- dio  : 자동으로 처리하여, res.data로 바로 접근 가능하다.
+
+- http : Uri.parse() 필요하다.
+- dio  : baseUrl 설정 후 상대 경로만 작성한다.
+
+- http : 에러 처리가 statusCode 기반이다.
+- dio  : DioException으로 다양한 에러 타입 처리 가능하다.
+ */
+class ApiService {
+  static const String url = ApiConstants.baseUrl;
+  // DIO 인스턴스 생성
+  static final Dio _dio = Dio(
+    BaseOptions(
+      baseUrl: url,
+      connectTimeout: const Duration(seconds: 5),
+      receiveTimeout: const Duration(seconds: 3),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    ),
+  );
+
+  static Future<User> signup(String userName) async {
+    final res = await _dio.post(
+      ApiConstants.userUrl,
+      data: {'userName': userName}
+    );
+    if(res.statusCode == 200){
+      return User.fromJson(res.data);
+    } else {
+      throw Exception(ErrorMessages.submitFailed);
+    }
+  }
+
+  static Future<User> login(String userName) async {
+    final res = await _dio.get(
+      '${ApiConstants.userUrl}/login',
+      data: {'userName': userName},
+    );
+    if(res.statusCode == 200){
+      return User.fromJson(res.data);
+    } else {
+      throw Exception(ErrorMessages.submitFailed);
+    }
+  }
+
+  static Future<User?> getUserByUserName(String userName) async {
+    final res = await _dio.get(
+        '${ApiConstants.userUrl}/name/${userName}'
+    );
+    if(res.statusCode == 200){
+      final jsonData = json.decode(res.data);
+      return User.fromJson(jsonData);
+    } else if (res.statusCode == 404) {
+      return null;
+    } else {
+      throw Exception(ErrorMessages.submitFailed);
+    }
+  }
+
+  static Future<List<User>> getAllUsers() async {
+    final res = await _dio.get(
+        ApiConstants.userUrl
+    );
+    if (res.statusCode == 200) {
+      final List jsonResponse = json.decode(res.data);
+      return jsonResponse.map((data) => User.fromJson(data)).toList();
+    } else {
+      throw Exception(ErrorMessages.submitFailed);
+    }
+  }
+
+
+  static Future<List<Question>> getQuestions() async {
+    final res = await _dio.get(
+        ApiConstants.questions
+    );
+    if (res.statusCode == 200) {
+      List<dynamic> jsonList = json.decode(res.data);
+      return jsonList.map((json) => Question.fromJson(json)).toList();
+    } else {
+      throw Exception(ErrorMessages.loadFailed);
+    }
+  }
+
+  static Future<Result> submitTest(
+    String userName, Map<int, String> answers) async {
+    List<TestAnswer> answerList = answers.entries.map((en) {
+      return TestAnswer(questionId: en.key, selectedOption: en.value);
+    }).toList();
+    TestRequest request = TestRequest(userName: userName, answers: answerList);
+    final res = await _dio.post(
+      ApiConstants.submit,
+      data: request.toJson(),
+    );
+    if(res.statusCode == 200){
+      return Result.fromJson(res.data);
+    } else {
+      throw Exception(ErrorMessages.submitFailed);
+    }
+  }
+
+  static Future<List<MbtiType>> getAllMbtiTypes() async {
+    final res = await _dio.get(
+      ApiConstants.types
+    );
+    if(res.statusCode == 200) {
+      List<dynamic> jsonList = json.decode(res.data);
+      return jsonList.map((json) => MbtiType.fromJson(json)).toList();
+    } else {
+      throw Exception(ErrorMessages.loadFailed);
+    }
+  }
+
+  static Future<MbtiType> getMbtiTypeByCode(String typeCode) async {
+    final res = await _dio.get(
+        '${ApiConstants.types}/$typeCode'
+    );
+    if(res.statusCode == 200) {
+      Map<String, dynamic> jsonData = json.decode(res.data);
+      return MbtiType.fromJson(jsonData);
+    } else {
+      throw Exception(ErrorMessages.loadFailed);
+    }
+  }
+
+  static Future<List<Result>> getResultsByUserName(String userName) async {
+    final res = await _dio.get(
+      ApiConstants.results,
+      queryParameters: {'userName': userName},
+    );
+    if(res.statusCode == 200) {
+      List<dynamic> jsonList = res.data;
+      return jsonList.map((json) => Result.fromJson(json)).toList();
+    } else {
+      throw Exception(ErrorMessages.loadFailed);
+    }
+  }
+
+  static Future<Result> getResultById(int id) async {
+    final res = await _dio.get(
+        '${ApiConstants.result}/$id'
+    );
+    if(res.statusCode == 200) {
+      Map<String, dynamic> jsonData = json.decode(res.data);
+      return Result.fromJson(jsonData);
+    } else {
+      throw Exception(ErrorMessages.loadFailed);
+    }
+  }
+
+  static Future<void> deleteResult(int id) async {
+    final res = await _dio.delete(
+        '${ApiConstants.result}/$id'
+    );
+    if(res.statusCode != 200) {
+      throw Exception("삭제 실패했어영!");
+    }
+  }
+
+  static Future<String> healthCheck() async {
+    final res = await _dio.get(
+        ApiConstants.health
+    );
+    return res.data;
+  }
+}
+
+
+/*
 models에 작성한 자료형 변수명을 활용하여 데이터 타입을 지정한다.
  */
+
+/*
 class ApiService {
   /*
   final에 비해 const가 가볍기 때문에 단기적으로 값을 상수 처리할 때는 final
@@ -186,15 +369,15 @@ class ApiService {
     -> entry 1개 = 객체 1개의 데이터
    */
   static Future<Result> submitTest(
-    String userName, Map<int, String> answers) async {
+      String userName, Map<int, String> answers) async {
     List<TestAnswer> answerList = answers.entries.map((en) {
       return TestAnswer(questionId: en.key, selectedOption: en.value);
     }).toList();
     TestRequest request = TestRequest(userName: userName, answers: answerList);
     final res = await http.post(
-      Uri.parse('$url${ApiConstants.submit}'),
-      headers: {'Content-Type' : 'application/json'},
-      body: json.encode(request.toJson())
+        Uri.parse('$url${ApiConstants.submit}'),
+        headers: {'Content-Type' : 'application/json'},
+        body: json.encode(request.toJson())
     );
     if(res.statusCode == 200){
       Map<String, dynamic> jsonData = json.decode(res.body);
@@ -285,7 +468,6 @@ final   a = 1; // int 로 자동 타입 확인
 
 
 }
-
 
 /*
  Map<String, dynamic> jsonData= json.decode(res.body);
@@ -521,4 +703,5 @@ class DynamicApiService {
 
 
 }
+ */
 

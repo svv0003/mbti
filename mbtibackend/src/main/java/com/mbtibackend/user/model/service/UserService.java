@@ -10,4 +10,5 @@ public interface UserService {
     User getUserByUserName(String userName);
     List<User> getAllUsers();
     void deleteUser(int id);
+    User signup(String userName);
 }

@@ -114,7 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 ),
-                SizedBox(height: 40),
+                SizedBox(height: 10),
                 SizedBox(
                   width: 300,
                   height: 50,
@@ -129,7 +129,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 ),
-                SizedBox(height: 40),
+                SizedBox(height: 20),
                 SizedBox(
                     width: 300,
                     child: TextField(
