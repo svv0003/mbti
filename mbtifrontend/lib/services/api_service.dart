@@ -98,7 +98,7 @@ class ApiService {
   }
 
   static Future<List<Question>> getQuestions() async {
-    final res = await _dio.get('/questions');
+    final res = await _dio.get(ApiConstants.questions);
     if (res.statusCode == 200) {
       List<dynamic> jsonList = res.data;
       return jsonList.map((json) => Question.fromJson(json)).toList();

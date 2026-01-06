@@ -112,7 +112,7 @@ class _SignupScreen extends State<SignupScreen> {
         });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('회원가입에 실패했습니다.\n다시 시도해주세요.'),
-          backgroundColor: Colors.red,)
+          backgroundColor: Colors.red)
         );
       }
     }
@@ -270,20 +270,17 @@ class _SignupScreen extends State<SignupScreen> {
                   child: ElevatedButton(
                     onPressed: _isLoading
                     ? null
-                    : () async {
-                      // _handleSignup(_nameController.text.trim());
-                      _handleSignup();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
-                      foregroundColor: Colors.white,
-                      disabledBackgroundColor: Colors.grey[400],
-                    ),
+                    : _handleSignup,
                     child: _isLoading
-                      ? CircularProgressIndicator(color: Colors.white)
-                      : Text(
-                      '회원가입',
-                      style: TextStyle(fontSize: 16)),
+                        ? SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2,
+                      ),
+                    )
+                        : Text('회원가입하기'),
                   ),
                 ),
                 SizedBox(height: 20),
@@ -308,11 +305,5 @@ class _SignupScreen extends State<SignupScreen> {
     );
   }
 
-  /// 위젯 제거 시 리소스 해제
-  /// TextEditingController 메모리 누수 방지
-  @override
-  void dispose() {
-    _nameController.dispose();
-    super.dispose();
-  }
+
 }
