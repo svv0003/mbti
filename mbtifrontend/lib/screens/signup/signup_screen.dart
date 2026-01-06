@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mbtifrontend/providers/auth_provider.dart';
+import 'package:provider/provider.dart';
 
 import '../../services/api_service.dart';
 
@@ -48,7 +50,6 @@ class _SignupScreen extends State<SignupScreen> {
   백엔드 API 호출하여 회원가입 진행하고,
   성공 시 자동 로그인 및 검사 화면 이동,
   실패 시 에러 메세지 표시 및 로딩 해제
-   */
   void _handleSignup(name) async {
     _isLoading = true;
     _validateName();
@@ -77,6 +78,43 @@ class _SignupScreen extends State<SignupScreen> {
       setState(() {
         _isLoading = false;
       });
+    }
+  }
+   */
+
+  /*
+  백엔드와 데이터를 주고 받는 과정에서 Future<> 사용하지 않아도 문제가 발생하지 않지만
+  프론트엔드와 백엔드 사이에 언젠가 문제가 발생할 수 있기 때문에
+  "백엔드와 주고받는 기능이다" 선언과 함께 Future를 작성한다.
+   */
+  void _handleSignup() async {
+    if(!_validateName()) return;
+    setState(() {
+      _isLoading = true;
+    });
+    try{
+      String name = _nameController.text.trim();
+      final user = await ApiService.signup(name);
+      if(mounted) {
+        await context.read<AuthProvider>().login(user);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('${user.userName}님, 회원가입이 완료되었습니다.'),
+          backgroundColor: Colors.greenAccent,
+          duration: Duration(seconds: 2),
+          )
+        );
+        context.go('/test', extra: name);
+      }
+    } catch(e) {
+      if(mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('회원가입에 실패했습니다.\n다시 시도해주세요.'),
+          backgroundColor: Colors.red,)
+        );
+      }
     }
   }
 
@@ -143,14 +181,36 @@ class _SignupScreen extends State<SignupScreen> {
                           _errorText = null;
                           return;
                         }
+                        /*
+                        RegExp(r'[^가-힣a-zA-Z]+$')
+
+                         */
+                        /*
+                        if (RegExp(r'^[ㄱ-힣a-zA-Z]+$').hasMatch(input)) {
+                        ㄱ-힣 : ㄱ ㄴ ㄷ ㄹ ... 자음 모음 형태 글자 사용 가능하다.
+                        가-힣 : ㄱ ㄴ ㄷ ㄹ ... 자음 모음 형태 글자 사용 불가능하다.
+                        */
+                        /*
+                        // 전체 문자열가 한글/영문이어야 함
                         if (RegExp(r'^[가-힣a-zA-Z]+$').hasMatch(input)) {
-                          _errorText = null; // 통과
+                          _errorText = null;
                         }
                         else if (RegExp(r'[0-9]').hasMatch(input)) {
                           _errorText = '숫자는 입력할 수 없습니다.';
                         }
                         else {
                           _errorText = "한글과 영문만 입력 가능합니다.";
+                        }
+                         */
+                        if (RegExp(r'[0-9]').hasMatch(value)) {
+                          _errorText = '숫자는 입력할 수 없습니다.';
+                        }
+                        // 문자열 어디든 한글/영문이 아닌 문자가 하나라도 있으면 매치
+                        else if (RegExp(r'[^가-힣a-zA-Z]').hasMatch(value)) {
+                          _errorText = '한글과 영어만 입력 가능니다.';
+                        }
+                        else {
+                          _errorText = null;
                         }
                       });
                     },
@@ -211,7 +271,8 @@ class _SignupScreen extends State<SignupScreen> {
                     onPressed: _isLoading
                     ? null
                     : () async {
-                      _handleSignup(_nameController.text.trim());
+                      // _handleSignup(_nameController.text.trim());
+                      _handleSignup();
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green,

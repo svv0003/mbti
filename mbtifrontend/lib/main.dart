@@ -39,9 +39,9 @@ final GoRouter _router = GoRouter(
       ),
       GoRoute(
           path: '/result',
-          builder: (context, state) {          // /result로 갈 때 반드시 Result DTO 객체를 extra로 전달해야 한다. -> context.go('/result', extra: myResultObject);
-            // final data = state.extra as Map<String, dynamic>;
-            // final userName = state.extra as String;
+          builder: (context, state) {         // /result로 갈 때 반드시 Result DTO 객체를 extra로 전달해야 한다. -> context.go('/result', extra: myResultObject);
+                                              // final data = state.extra as Map<String, dynamic>;
+                                              // final userName = state.extra as String;
             final result = state.extra as Result;
             // return ResultScreen(
             //   userName: data['userName']!,

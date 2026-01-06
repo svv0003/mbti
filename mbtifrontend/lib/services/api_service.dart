@@ -33,6 +33,7 @@ http와의 차이점
  */
 class ApiService {
   static const String url = ApiConstants.baseUrl;
+
   // DIO 인스턴스 생성
   static final Dio _dio = Dio(
     BaseOptions(
@@ -47,10 +48,16 @@ class ApiService {
 
   static Future<User> signup(String userName) async {
     final res = await _dio.post(
-      ApiConstants.userUrl,
+      '${ApiConstants.userUrl}/signup',
       data: {'userName': userName}
     );
-    if(res.statusCode == 200){
+    /*
+    회원가입은 200, 201 상태 코드를 사용한다.
+    200 : 요청 성공, [GET PUT PATCH]
+    201 : 리소스 생성 성공, [POST]
+    204 : No Content(성공했으나 응답 본문 없음) [DELETE]
+     */
+    if(res.statusCode == 200 || res.statusCode == 201){
       return User.fromJson(res.data);
     } else {
       throw Exception(ErrorMessages.submitFailed);
@@ -58,7 +65,7 @@ class ApiService {
   }
 
   static Future<User> login(String userName) async {
-    final res = await _dio.get(
+    final res = await _dio.post(
       '${ApiConstants.userUrl}/login',
       data: {'userName': userName},
     );
@@ -70,12 +77,9 @@ class ApiService {
   }
 
   static Future<User?> getUserByUserName(String userName) async {
-    final res = await _dio.get(
-        '${ApiConstants.userUrl}/name/${userName}'
-    );
+    final res = await _dio.get('${ApiConstants.userUrl}/name/$userName');
     if(res.statusCode == 200){
-      final jsonData = json.decode(res.data);
-      return User.fromJson(jsonData);
+      return User.fromJson(res.data);
     } else if (res.statusCode == 404) {
       return null;
     } else {
@@ -84,24 +88,19 @@ class ApiService {
   }
 
   static Future<List<User>> getAllUsers() async {
-    final res = await _dio.get(
-        ApiConstants.userUrl
-    );
+    final res = await _dio.get(ApiConstants.userUrl);
     if (res.statusCode == 200) {
-      final List jsonResponse = json.decode(res.data);
-      return jsonResponse.map((data) => User.fromJson(data)).toList();
+      final List<dynamic> jsonList = res.data;
+      return jsonList.map((json) => User.fromJson(json)).toList();
     } else {
       throw Exception(ErrorMessages.submitFailed);
     }
   }
 
-
   static Future<List<Question>> getQuestions() async {
-    final res = await _dio.get(
-        ApiConstants.questions
-    );
+    final res = await _dio.get('/questions');
     if (res.statusCode == 200) {
-      List<dynamic> jsonList = json.decode(res.data);
+      List<dynamic> jsonList = res.data;
       return jsonList.map((json) => Question.fromJson(json)).toList();
     } else {
       throw Exception(ErrorMessages.loadFailed);
@@ -126,11 +125,9 @@ class ApiService {
   }
 
   static Future<List<MbtiType>> getAllMbtiTypes() async {
-    final res = await _dio.get(
-      ApiConstants.types
-    );
+    final res = await _dio.get(ApiConstants.types);
     if(res.statusCode == 200) {
-      List<dynamic> jsonList = json.decode(res.data);
+      List<dynamic> jsonList = res.data;
       return jsonList.map((json) => MbtiType.fromJson(json)).toList();
     } else {
       throw Exception(ErrorMessages.loadFailed);
@@ -142,8 +139,7 @@ class ApiService {
         '${ApiConstants.types}/$typeCode'
     );
     if(res.statusCode == 200) {
-      Map<String, dynamic> jsonData = json.decode(res.data);
-      return MbtiType.fromJson(jsonData);
+      return MbtiType.fromJson(res.data);
     } else {
       throw Exception(ErrorMessages.loadFailed);
     }
@@ -155,7 +151,7 @@ class ApiService {
       queryParameters: {'userName': userName},
     );
     if(res.statusCode == 200) {
-      List<dynamic> jsonList = res.data;
+      final List<dynamic> jsonList = res.data;
       return jsonList.map((json) => Result.fromJson(json)).toList();
     } else {
       throw Exception(ErrorMessages.loadFailed);
@@ -163,30 +159,23 @@ class ApiService {
   }
 
   static Future<Result> getResultById(int id) async {
-    final res = await _dio.get(
-        '${ApiConstants.result}/$id'
-    );
+    final res = await _dio.get('${ApiConstants.result}/$id');
     if(res.statusCode == 200) {
-      Map<String, dynamic> jsonData = json.decode(res.data);
-      return Result.fromJson(jsonData);
+      return Result.fromJson(res.data);
     } else {
       throw Exception(ErrorMessages.loadFailed);
     }
   }
 
   static Future<void> deleteResult(int id) async {
-    final res = await _dio.delete(
-        '${ApiConstants.result}/$id'
-    );
+    final res = await _dio.delete('${ApiConstants.result}/$id');
     if(res.statusCode != 200) {
       throw Exception("삭제 실패했어영!");
     }
   }
 
   static Future<String> healthCheck() async {
-    final res = await _dio.get(
-        ApiConstants.health
-    );
+    final res = await _dio.get(ApiConstants.health);
     return res.data;
   }
 }
