@@ -10,6 +10,16 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
+    /*
+    Edge Chrome
+    1. debug print 사용해서 개발자가 작성한 데이터나 기능 결과 확인 가능하다.
+    2. 테스트 종료하고 나면 웹사이트가 필요하지 않지만 상황에 따라
+       테스트 모드 웹사이트를 배포용 웹사이트로 사용할 수도 있다.
+    3. 개발자가 개발하기 위한 테스트 모드이기 때문에
+       실행할 때마다 서버 포트가 변경되기 때문에 일일이 수정해야 한다.
+       (변경되지 않도록 서버 포트를 고정적으로 설정할 수 있다.
+
+     */
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
