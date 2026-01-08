@@ -26,6 +26,16 @@ dependencies:
   go_router: ^14.0.0
   # 로그인 상태 저장 모듈
   shared_preferences: ^2.2.2
+  # 카카오맵 플러그인 JS Key를 가져와서 위젯으로 포장하고 기능을 활용할 것이다.
+  # 안드로이드나 IOS 네이티브 언어는 전용 Key를 가져와야 한다.
+  kakao_map_plugin: ^0.3.7
+  # 내 위치(GPS) 좌표를 가져오는 도구이다.
+  # 지도 기능 사용 시 필수로 함께 사용해야 한다.
+  # 안드로이드와 IOS의 위치(좌표)는 동일한 방식으로 사용하는가? 위치 관련 권한은 추가해야 하는가?
+  geolocator: ^13.0.1
+  # 토스 결제
+  tosspayments_webview_flutter: ^1.0.6
+
 
 dev_dependencies:
   flutter_test:

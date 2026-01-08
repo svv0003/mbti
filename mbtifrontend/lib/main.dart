@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kakao_map_plugin/kakao_map_plugin.dart';
 import 'package:mbtifrontend/common/constants.dart';
 import 'package:mbtifrontend/providers/auth_provider.dart';
 import 'package:mbtifrontend/screens/history/result_detail_screen.dart';
 import 'package:mbtifrontend/screens/home/home_screen.dart';
 import 'package:mbtifrontend/screens/login/login_screen.dart';
+import 'package:mbtifrontend/screens/map/map_screen.dart';
 import 'package:mbtifrontend/screens/result/result_screen.dart';
 import 'package:mbtifrontend/screens/signup/signup_screen.dart';
 import 'package:mbtifrontend/screens/test/test_screen.dart';
@@ -15,6 +17,13 @@ import 'models/result_model.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  /*
+  1. 카카오 자바스크립트 키 초기화
+  AuthRepository.initialize(appKey: '카카오 자바스크립트 키');
+  .env처럼 관리하기
+   */
+  AuthRepository.initialize(appKey: '128eb4b790dd4a459aa30c8d6a0efde4');
+
   runApp(const MyApp());
 }
 
@@ -26,9 +35,13 @@ final GoRouter _router = GoRouter(
           builder: (context, state) => const HomeScreen()
       ),
       GoRoute(
+          path: '/map',
+          builder: (context, state) => const MapScreen()
+      ),
+      GoRoute(
           path: '/test',
           builder: (context, state) {                   // /test로 이동할 때 반드시 userName(String)을 extra로 전달해야 한다. -> context.go('/test', extra: '홍길동');
-            final userName = state.extra as String;     // 잠시 사용할 이름인데 문자열이에요~ 
+            final userName = state.extra as String;     // 잠시 사용할 이름인데 문자열이에요~
             /*
             생성된 객체를 사용할 수 있으나 매개변수는 존재하지 않는 상태이다.
             단순히 화면만 보여주는 형태이다.

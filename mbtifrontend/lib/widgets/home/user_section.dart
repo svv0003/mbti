@@ -30,7 +30,18 @@ class _UserSectionState extends State<UserSection> {
         ),
         SizedBox(height: 10),
         SizedBox(
-          child: Text("내 주변 10km 다른 유저의 MBTI 확인하기"),
+          width: 300,
+          height: 50,
+          // child: Text("내 주변 10km 다른 유저의 MBTI 확인하기"),
+          // /map 내 위치 지도 보기로 잠시 사용한다.
+          child:ElevatedButton(
+              onPressed: () => context.go('/map'),
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.grey[300],
+                  foregroundColor: Colors.black87
+              ),
+              child: Text("내 위치 보기"),
+          ),
         ),
         SizedBox(height: 10),
         /*

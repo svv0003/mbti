@@ -37,7 +37,7 @@ class ApiConstants {
   Flutter 앱에서는 주로 컴파일 실행하며, 이유는 인터프리터보다 빠르기 때문이다.
   -> 상황에 따라 선택하여 사용할 수 있으며 컴파일에서 사용한다는 표현이 더 적합하다.
    */
-  static const String baseUrl = 'http://localhost:8080/api';
+  static const String baseUrl = 'http://10.0.2.2:8080/api';
   static const String mbtiUrl = '/mbti';
   static const String userUrl = '/users';
   static const String questions  = '$mbtiUrl/questions';

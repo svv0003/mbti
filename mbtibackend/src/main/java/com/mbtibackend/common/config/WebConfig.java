@@ -18,7 +18,6 @@ public class WebConfig implements WebMvcConfigurer {
     3. 개발자가 개발하기 위한 테스트 모드이기 때문에
        실행할 때마다 서버 포트가 변경되기 때문에 일일이 수정해야 한다.
        (변경되지 않도록 서버 포트를 고정적으로 설정할 수 있다.
-
      */
     @Bean
     public WebMvcConfigurer corsConfigurer() {
@@ -31,7 +30,7 @@ public class WebConfig implements WebMvcConfigurer {
 //                                "*",
                                 "http://localhost:3000", // IOS 테스트 8080
                                 "http://localhost:3001",
-                                "http://localhost:55170",
+                                "http://localhost:52102",
                                 "http://10.0.2.2:8080" // 안드로이드 핸드폰 테스트
                         )
                         .allowCredentials(true)

@@ -24,7 +24,7 @@ public class MbtiController {
 
     /**
      * 모든 질문 조회
-     * GET /api/mbti/questions
+     * GET /api/mbeti/questions
      */
     @GetMapping("/questions")
     public ResponseEntity<List<Question>> getAllQuestions() {
